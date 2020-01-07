@@ -102,5 +102,10 @@ Conclusion?
 - Constructor makes it more difficult to set up test
 - Init method is not a solution (services should be stateless if possible)
 
+## Example 6
 
+TODO: Singletons
 
+## Example 7
+
+TODO: Service locators and factories
