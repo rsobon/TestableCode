@@ -66,8 +66,8 @@ Conclusion?
 
 ## Example 2
 
-- Created new class PokemonReader for isolation
-- We can test both the Entity and ImportingStatus thanks to extracting logic to isolated class
+- Created new class `PokemonReader` for isolation
+- We can test both the `Pokemon` entity and `ImportingStatus` thanks to extracting logic to isolated class
 
 Conclusion?
 - We can't test the Timestamp property of Entity class and Console.WriteLine because they are tightly coupled
