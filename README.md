@@ -1,5 +1,5 @@
 # TestableCode
-Short demo of designing testable code in .NET with interfaces, dependency injection and IoC
+Short demo of designing testable code in .NET Core with interfaces, dependency injection and IoC
 
 Using:
 - .NET Core 3.1

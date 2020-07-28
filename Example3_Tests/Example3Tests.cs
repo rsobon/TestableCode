@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Example3.Command;
 using Example3.Db;
@@ -14,6 +13,10 @@ using NUnit.Framework;
 
 namespace Example3_Tests
 {
+    /*
+     * Tests no longer require to write physical file to hard drive.
+     * Instead mocks can be set up to return what we need.
+     */
     [TestFixture]
     public class Example3Tests
     {
@@ -26,7 +29,7 @@ namespace Example3_Tests
         private string _json;
         private Pokemon _expectedPokemon;
 
-        private const string FilePath = "test.json";
+        private const string FakeFilePath = "test.json";
 
         [SetUp]
         public void SetUp()
@@ -38,7 +41,6 @@ namespace Example3_Tests
             _fileSystemWrapperMock = new Mock<IFileSystemWrapper>();
 
             _json = @"{ ""id"": 1, ""name"": ""Charmander"", ""type"": 1 }";
-            File.WriteAllText(FilePath, _json);
             _expectedPokemon = new Pokemon
             {
                 Id = 1,
@@ -46,12 +48,6 @@ namespace Example3_Tests
                 Type = PokemonType.Fire,
                 Timestamp = new DateTime(2010, 1, 1)
             };
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            File.Delete(FilePath);
         }
 
         [Test]
@@ -86,41 +82,38 @@ namespace Example3_Tests
         public async Task ImportPokemonCommand_ShouldLogReceivedFile()
         {
             // Arrange
-            var filePath = FilePath;
             var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
             // Act
-            await command.ImportPokemon(FilePath);
+            await command.ImportPokemon(FakeFilePath);
 
             // Assert
-            _loggerMock.Verify(x => x.Information($"Received pokemon to import: {filePath}..."));
+            _loggerMock.Verify(x => x.Information($"Received pokemon to import: {FakeFilePath}..."));
         }
 
         [Test]
         public async Task ImportPokemonCommand_ShouldReadFile()
         {
             // Arrange
-            var filePath = FilePath;
             var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
             // Act
-            await command.ImportPokemon(FilePath);
+            await command.ImportPokemon(FakeFilePath);
 
             // Assert
-            _fileSystemWrapperMock.Verify(x => x.ReadFile(filePath));
+            _fileSystemWrapperMock.Verify(x => x.ReadFile(FakeFilePath));
         }
 
         [Test]
         public async Task ImportPokemonCommand_ShouldReadPokemon()
         {
             // Arrange
-            var filePath = FilePath;
             var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-            _fileSystemWrapperMock.Setup(x => x.ReadFile(filePath)).Returns(_json);
+            _fileSystemWrapperMock.Setup(x => x.ReadFile(FakeFilePath)).Returns(_json);
 
             // Act
-            await command.ImportPokemon(FilePath);
+            await command.ImportPokemon(FakeFilePath);
 
             // Assert
             _pokemonReaderMock.Verify(x => x.ReadPokemon(_json));
@@ -130,14 +123,13 @@ namespace Example3_Tests
         public async Task ImportPokemonCommand_ShouldSaveDatabase()
         {
             // Arrange
-            var filePath = FilePath;
             var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-            _fileSystemWrapperMock.Setup(x => x.ReadFile(filePath)).Returns(_json);
+            _fileSystemWrapperMock.Setup(x => x.ReadFile(FakeFilePath)).Returns(_json);
             _pokemonReaderMock.Setup(x => x.ReadPokemon(_json)).Returns(_expectedPokemon);
 
             // Act
-            await command.ImportPokemon(FilePath);
+            await command.ImportPokemon(FakeFilePath);
 
             // Assert
             _databaseMock.Verify(x => x.SavePokemon(_expectedPokemon));
@@ -147,14 +139,13 @@ namespace Example3_Tests
         public async Task ImportPokemonCommand_ShouldReturnImportingStatusSuccess()
         {
             // Arrange
-            var filePath = FilePath;
             var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-            _fileSystemWrapperMock.Setup(x => x.ReadFile(filePath)).Returns(_json);
+            _fileSystemWrapperMock.Setup(x => x.ReadFile(FakeFilePath)).Returns(_json);
             _pokemonReaderMock.Setup(x => x.ReadPokemon(_json)).Returns(_expectedPokemon);
 
             // Act
-            var result = await command.ImportPokemon(FilePath);
+            var result = await command.ImportPokemon(FakeFilePath);
 
             // Assert
             Assert.AreEqual(ImportingStatus.Success, result);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Example5.Command;
 using Example5.Db;
@@ -14,6 +13,10 @@ using NUnit.Framework;
 
 namespace Example5_Tests
 {
+    /*
+     * New test for validation logic.
+     * If validation would be extracted to separate class (e.g. ValidationService) we could do even more tests.
+     */
     [TestFixture]
     public class Example4Tests
     {
@@ -38,7 +41,6 @@ namespace Example5_Tests
             _fileSystemWrapperMock = new Mock<IFileSystemWrapper>();
 
             _json = @"{ ""id"": 1, ""name"": ""Charmander"", ""type"": 1 }";
-            File.WriteAllText(FilePath, _json);
             _expectedPokemon = new Pokemon
             {
                 Id = 1,
@@ -46,12 +48,6 @@ namespace Example5_Tests
                 Type = PokemonType.Fire,
                 Timestamp = new DateTime(2010, 1, 1)
             };
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            File.Delete(FilePath);
         }
 
         [Test]
@@ -82,9 +78,6 @@ namespace Example5_Tests
             _loggerMock.Verify(x => x.Information($"Pokemon deserialized. Id: {_expectedPokemon.Id}, Name: {_expectedPokemon.Name}, Type: {_expectedPokemon.Type}, Timestamp: {_expectedPokemon.Timestamp}"));
         }
 
-        /*
-         * New test for validation logic
-         */
         [Test]
         public void EntityReader_ShouldLogValidationResult()
         {
