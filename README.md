@@ -70,7 +70,7 @@ Conclusion?
 - We can test both the `Pokemon` entity and `ImportingStatus` thanks to extracting logic to isolated class
 
 Conclusion?
-- We can't test the Timestamp property of Entity class and Console.WriteLine because they are tightly coupled
+- We can't test the Timestamp property of Pokemon entity and Console.WriteLine because they are tightly coupled
 
 ## Example 3
 
@@ -81,8 +81,9 @@ Conclusion?
 - NuGet: Moq, Fluent Assertions
 
 Conclusion?
+- Tests no longer require to write physical file to hard drive. Instead mocks can be set up to return what we need.
 - Poor-man’s injection via new keyword
-- Method ImportPokemonCommand does not have single responsibility
+- Method `ImportPokemon` in `ImportPokemonCommand` does not have single responsibility
 
 ## Example 4
 
