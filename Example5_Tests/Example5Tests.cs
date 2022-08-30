@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Example5.Command;
+using Example5.Configuration;
 using Example5.Db;
 using Example5.Enums;
 using Example5.Logging;
@@ -11,159 +14,172 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 
-namespace Example5_Tests
+namespace Example5_Tests;
+
+[TestFixture]
+public class Example5Tests
 {
-    /*
-     * New test for validation logic.
-     * If validation would be extracted to separate class (e.g. ValidationService) we could do even more tests.
-     */
-    [TestFixture]
-    public class Example4Tests
+    private Mock<IDateTimeWrapper> _dateTimeWrapperMock;
+    private Mock<IPokemonStore> _databaseMock;
+    private Mock<IPokemonConfiguration> _configurationMock;
+    private Mock<IPokemonReader> _pokemonReaderMock;
+    private Mock<ILogger> _loggerMock;
+    private Mock<IFileSystemWrapper> _fileSystemWrapperMock;
+
+    private FileInfo _testData;
+    private Pokemon _expectedPokemon;
+
+    [SetUp]
+    public void SetUp()
     {
-        private Mock<IDateTimeWrapper> _dateTimeWrapperMock;
-        private Mock<IPokemonStore> _databaseMock;
-        private Mock<IPokemonReader> _pokemonReaderMock;
-        private Mock<ILogger> _loggerMock;
-        private Mock<IFileSystemWrapper> _fileSystemWrapperMock;
+        _dateTimeWrapperMock = new Mock<IDateTimeWrapper>();
+        _databaseMock = new Mock<IPokemonStore>();
+        _configurationMock = new Mock<IPokemonConfiguration>();
+        _pokemonReaderMock = new Mock<IPokemonReader>();
+        _loggerMock = new Mock<ILogger>();
+        _fileSystemWrapperMock = new Mock<IFileSystemWrapper>();
 
-        private string _json;
-        private Pokemon _expectedPokemon;
-
-        private const string FilePath = "test.json";
-
-        [SetUp]
-        public void SetUp()
+        _testData = new FileInfo(@"App_Data\testdata.json");
+        _expectedPokemon = new Pokemon
         {
-            _dateTimeWrapperMock = new Mock<IDateTimeWrapper>();
-            _databaseMock = new Mock<IPokemonStore>();
-            _pokemonReaderMock = new Mock<IPokemonReader>();
-            _loggerMock = new Mock<ILogger>();
-            _fileSystemWrapperMock = new Mock<IFileSystemWrapper>();
+            Id = 4,
+            Name = "Charmander",
+            Type = PokemonType.Fire,
+            Timestamp = new DateTime(2010, 1, 1)
+        };
+    }
 
-            _json = @"{ ""id"": 1, ""name"": ""Charmander"", ""type"": 1 }";
-            _expectedPokemon = new Pokemon
-            {
-                Id = 1,
-                Name = "Charmander",
-                Type = PokemonType.Fire,
-                Timestamp = new DateTime(2010, 1, 1)
-            };
-        }
-
-        [Test]
-        public void PokemonReader_ShouldDeserializePokemon()
+    [Test]
+    public async Task PokemonReader_ShouldDeserializePokemon()
+    {
+        // Arrange
+        _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
+        _configurationMock.Setup(x => x.AllowedPokemonNames()).Returns(new List<string>
         {
-            // Arrange
-            _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
-            var reader = new PokemonReader(_dateTimeWrapperMock.Object, _loggerMock.Object, _databaseMock.Object);
+            "Charmander"
+        });
+        var stream = File.OpenRead(_testData.FullName);
+        var reader = new PokemonReader(_dateTimeWrapperMock.Object, _loggerMock.Object, _configurationMock.Object);
 
-            // Act
-            var result = reader.ReadPokemon(_json);
+        // Act
+        var result = await reader.ReadPokemon(stream);
 
-            // Assert
-            result.Should().BeEquivalentTo(_expectedPokemon);
-        }
+        // Assert
+        result.Should().BeEquivalentTo(_expectedPokemon);
+    }
 
-        [Test]
-        public void PokemonReader_ShouldLogDeserializationOfPokemon()
+    [Test]
+    public async Task PokemonReader_ShouldLogDeserializationOfPokemon()
+    {
+        // Arrange
+        _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
+        _configurationMock.Setup(x => x.AllowedPokemonNames()).Returns(new List<string>
         {
-            // Arrange
-            _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
-            var reader = new PokemonReader(_dateTimeWrapperMock.Object, _loggerMock.Object, _databaseMock.Object);
+            "Charmander"
+        });
+        var stream = File.OpenRead(_testData.FullName);
+        var reader = new PokemonReader(_dateTimeWrapperMock.Object, _loggerMock.Object, _configurationMock.Object);
 
-            // Act
-            reader.ReadPokemon(_json);
+        // Act
+        await reader.ReadPokemon(stream);
 
-            // Assert
-            _loggerMock.Verify(x => x.Information($"Pokemon deserialized. Id: {_expectedPokemon.Id}, Name: {_expectedPokemon.Name}, Type: {_expectedPokemon.Type}, Timestamp: {_expectedPokemon.Timestamp}"));
-        }
+        // Assert
+        _loggerMock.Verify(x => x.Information($"Pokemon deserialized. Id: {_expectedPokemon.Id}, Name: {_expectedPokemon.Name}, Type: {_expectedPokemon.Type}, Timestamp: {_expectedPokemon.Timestamp}"));
+    }
 
-        [Test]
-        public void EntityReader_ShouldLogValidationResult()
+    [Test]
+    public async Task EntityReader_ShouldLogValidationFailed()
+    {
+        // Arrange
+        _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
+        _configurationMock.Setup(x => x.AllowedPokemonNames()).Returns(new List<string>
         {
-            // Arrange
-            _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
-            _databaseMock.Setup(x => x.IsValidationEnabled()).Returns(true);
-            var reader = new PokemonReader(_dateTimeWrapperMock.Object, _loggerMock.Object, _databaseMock.Object);
+            "Bulbasaur"
+        });
+        var stream = File.OpenRead(_testData.FullName);
+        var reader = new PokemonReader(_dateTimeWrapperMock.Object, _loggerMock.Object, _configurationMock.Object);
 
-            // Act
-            reader.ReadPokemon(_json);
+        // Act
+        var act = () => reader.ReadPokemon(stream);
 
-            // Assert
-            _loggerMock.Verify(x => x.Information($"Validation result: {true}"));
-        }
+        // Assert
+        await act.Should().ThrowAsync<InvalidDataException>().WithMessage("Validation failed!");
+        _loggerMock.Verify(x => x.Information("Pokemon name: \"Charmander\" is not allowed!"));
+    }
 
-        [Test]
-        public async Task ImportPokemonCommand_ShouldLogReceivedFile()
-        {
-            // Arrange
-            var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
+    [Test]
+    public async Task ImportPokemonCommand_ShouldLogReceivedFile()
+    {
+        // Arrange
+        var command = new ImportPokemonCommand(_loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-            // Act
-            await command.ImportPokemon(FilePath);
+        // Act
+        await command.ImportPokemon(_testData.FullName);
 
-            // Assert
-            _loggerMock.Verify(x => x.Information($"Received pokemon to import: {FilePath}..."));
-        }
+        // Assert
+        _loggerMock.Verify(x => x.Information($"Received pokemon to import: {_testData.FullName}..."));
+    }
 
-        [Test]
-        public async Task ImportPokemonCommand_ShouldReadFile()
-        {
-            // Arrange
-            var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
+    [Test]
+    public async Task ImportPokemonCommand_ShouldReadFile()
+    {
+        // Arrange
+        var command = new ImportPokemonCommand(_loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-            // Act
-            await command.ImportPokemon(FilePath);
+        // Act
+        await command.ImportPokemon(_testData.FullName);
 
-            // Assert
-            _fileSystemWrapperMock.Verify(x => x.ReadFile(FilePath));
-        }
+        // Assert
+        _fileSystemWrapperMock.Verify(x => x.OpenRead(_testData.FullName));
+    }
 
-        [Test]
-        public async Task ImportPokemonCommand_ShouldReadPokemon()
-        {
-            // Arrange
-            var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
+    [Test]
+    public async Task ImportPokemonCommand_ShouldReadPokemon()
+    {
+        // Arrange
+        const string fakeFilePath = "fake.json";
+        var stream = File.OpenRead(_testData.FullName);
+        _fileSystemWrapperMock.Setup(x => x.OpenRead(fakeFilePath)).Returns(stream);
+        var command = new ImportPokemonCommand(_loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-            _fileSystemWrapperMock.Setup(x => x.ReadFile(FilePath)).Returns(_json);
+        // Act
+        await command.ImportPokemon(fakeFilePath);
 
-            // Act
-            await command.ImportPokemon(FilePath);
+        // Assert
+        _pokemonReaderMock.Verify(x => x.ReadPokemon(stream));
+    }
 
-            // Assert
-            _pokemonReaderMock.Verify(x => x.ReadPokemon(_json));
-        }
+    [Test]
+    public async Task ImportPokemonCommand_ShouldSaveDatabase()
+    {
+        // Arrange
+        const string fakeFilePath = "fake.json";
+        var stream = File.OpenRead(_testData.FullName);
+        _fileSystemWrapperMock.Setup(x => x.OpenRead(fakeFilePath)).Returns(stream);
+        _pokemonReaderMock.Setup(x => x.ReadPokemon(stream)).ReturnsAsync(_expectedPokemon);
+        var command = new ImportPokemonCommand(_loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-        [Test]
-        public async Task ImportPokemonCommand_ShouldSaveDatabase()
-        {
-            // Arrange
-            var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
+        // Act
+        await command.ImportPokemon(fakeFilePath);
 
-            _fileSystemWrapperMock.Setup(x => x.ReadFile(FilePath)).Returns(_json);
-            _pokemonReaderMock.Setup(x => x.ReadPokemon(_json)).Returns(_expectedPokemon);
+        // Assert
+        _databaseMock.Verify(x => x.SavePokemon(_expectedPokemon));
+    }
 
-            // Act
-            await command.ImportPokemon(FilePath);
+    [Test]
+    public async Task ImportPokemonCommand_ShouldReturnImportingStatusSuccess()
+    {
+        // Arrange
+        const string fakeFilePath = "fake.json";
+        var stream = File.OpenRead(_testData.FullName);
+        _fileSystemWrapperMock.Setup(x => x.OpenRead(fakeFilePath)).Returns(stream);
+        _pokemonReaderMock.Setup(x => x.ReadPokemon(stream)).ReturnsAsync(_expectedPokemon);
+        var command = new ImportPokemonCommand(_loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
 
-            // Assert
-            _databaseMock.Verify(x => x.SavePokemon(_expectedPokemon));
-        }
+        // Act
+        var result = await command.ImportPokemon(fakeFilePath);
 
-        [Test]
-        public async Task ImportPokemonCommand_ShouldReturnImportingStatusSuccess()
-        {
-            // Arrange
-            var command = new ImportPokemonCommand( _loggerMock.Object, _databaseMock.Object, _pokemonReaderMock.Object, _fileSystemWrapperMock.Object);
-
-            _fileSystemWrapperMock.Setup(x => x.ReadFile(FilePath)).Returns(_json);
-            _pokemonReaderMock.Setup(x => x.ReadPokemon(_json)).Returns(_expectedPokemon);
-
-            // Act
-            var result = await command.ImportPokemon(FilePath);
-
-            // Assert
-            Assert.AreEqual(ImportingStatus.Success, result);
-        }
+        // Assert
+        Assert.AreEqual(ImportingStatus.Success, result);
     }
 }

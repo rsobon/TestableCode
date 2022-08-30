@@ -1,8 +1,7 @@
-﻿namespace Example5.Enums
+﻿namespace Example5.Enums;
+
+public enum ImportingStatus
 {
-    public enum ImportingStatus
-    {
-        Success,
-        Error
-    }
+    Success,
+    Error
 }

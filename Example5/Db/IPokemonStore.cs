@@ -1,12 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Example5.Model;
 
-namespace Example5.Db
-{
-    public interface IPokemonStore
-    {
-        Task SavePokemon(Pokemon pokemon);
+namespace Example5.Db;
 
-        bool IsValidationEnabled();
-    }
+public interface IPokemonStore
+{
+    Task SavePokemon(Pokemon pokemon);
 }

@@ -5,18 +5,17 @@ using Example4.Reader;
 using Example4.Wrappers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Example4
+namespace Example4;
+
+public static class DependencyInjectionExtensions
 {
-    public static class DependencyInjectionExtensions
+    public static void RegisterServices(this IServiceCollection serviceCollection)
     {
-        public static void RegisterServices(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddTransient<IPokemonStore, PokemonStore>();
-            serviceCollection.AddTransient<IPokemonReader, PokemonReader>();
-            serviceCollection.AddTransient<IDateTimeWrapper, DateTimeWrapper>();
-            serviceCollection.AddTransient<ILogger, Logger>();
-            serviceCollection.AddTransient<IFileSystemWrapper, FileSystemWrapper>();
-            serviceCollection.AddTransient<IImportPokemonCommand, ImportPokemonCommand>();
-        }
+        serviceCollection.AddTransient<IPokemonStore, PokemonStore>();
+        serviceCollection.AddTransient<IPokemonReader, PokemonReader>();
+        serviceCollection.AddTransient<IDateTimeWrapper, DateTimeWrapper>();
+        serviceCollection.AddTransient<ILogger, Logger>();
+        serviceCollection.AddTransient<IFileSystemWrapper, FileSystemWrapper>();
+        serviceCollection.AddTransient<IImportPokemonCommand, ImportPokemonCommand>();
     }
 }

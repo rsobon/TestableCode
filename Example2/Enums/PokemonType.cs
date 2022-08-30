@@ -1,9 +1,8 @@
-﻿namespace Example2.Enums
+﻿namespace Example2.Enums;
+
+public enum PokemonType
 {
-    public enum PokemonType
-    {
-        Grass,
-        Fire,
-        Water
-    }
+    Grass,
+    Fire,
+    Water
 }

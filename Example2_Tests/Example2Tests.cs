@@ -6,63 +6,66 @@ using Example2.Model;
 using Example2.Reader;
 using NUnit.Framework;
 
-namespace Example2_Tests
+namespace Example2_Tests;
+
+[TestFixture]
+public class Example2Tests
 {
-    /*
-     * We can test both the Entity and ImportingStatus thanks to extracting logic to isolated class
-     * We can't however test the Timestamp property of Entity class and Console.WriteLine because it's tightly coupled
-     */
-    [TestFixture]
-    public class Example2Tests
+    private FileInfo _testData;
+
+    [SetUp]
+    public void SetUp()
     {
-        private string _json;
+        _testData = new FileInfo(@"App_Data\testdata.json");
+    }
 
-        [SetUp]
-        public void SetUp()
+    [Test]
+    public async Task PokemonReader_ShouldDeserializePokemon()
+    {
+        // Arrange
+        var expectedPokemon = new Pokemon
         {
-            _json = @"{ ""id"": 1, ""name"": ""Charmander"", ""type"": 1 }";
-            File.WriteAllText("test.json", _json);
-        }
+            Id = 4,
+            Name = "Charmander",
+            Type = PokemonType.Fire
+        };
+        var reader = new PokemonReader();
+        var json = await File.ReadAllTextAsync(_testData.FullName);
 
-        [TearDown]
-        public void TearDown()
-        {
-            File.Delete("test.json");
-        }
+        // Act
+        var result = reader.ReadPokemon(json);
 
-        [Test]
-        public void PokemonReader_ShouldDeserializePokemon()
-        {
-            // Arrange
-            var expectedPokemon = new Pokemon
-            {
-                Id = 1,
-                Name = "Charmander",
-                Type = PokemonType.Fire
-            };
-            var reader = new PokemonReader();
+        // Assert
+        Assert.AreEqual(expectedPokemon.Id, result.Id);
+        Assert.AreEqual(expectedPokemon.Name, result.Name);
+        Assert.AreEqual(expectedPokemon.Type, result.Type);
+    }
 
-            // Act
-            var result = reader.ReadPokemon(_json);
+    [Test]
+    public async Task ImportPokemonCommand_ShouldReturnImportingStatusSuccess()
+    {
+        // Arrange
+        var file = new FileInfo(@"App_Data\testdata.json");
+        var command = new ImportPokemonCommand();
 
-            // Assert
-            Assert.AreEqual(expectedPokemon.Id, result.Id);
-            Assert.AreEqual(expectedPokemon.Name, result.Name);
-            Assert.AreEqual(expectedPokemon.Type, result.Type);
-        }
+        // Act
+        var result = await command.ImportPokemon(file.FullName);
 
-        [Test]
-        public async Task ImportPokemonCommand_ShouldReturnImportingStatusSuccess()
-        {
-            // Arrange
-            var file = new FileInfo("test.json");
-            var command = new ImportPokemonCommand();
+        // Assert
+        Assert.AreEqual(ImportingStatus.Success, result);
+    }
 
-            // Act
-            var result = await command.ImportPokemon(file.FullName);
+    [Test]
+    public async Task ImportPokemonCommand_ShouldReturnImportingStatusError_WhenMissingFile()
+    {
+        // Arrange
+        var file = new FileInfo("test.json");
+        var command = new ImportPokemonCommand();
 
-            // Assert
-            Assert.AreEqual(ImportingStatus.Success, result);
-        }
+        // Act
+        var result = await command.ImportPokemon(file.FullName);
+
+        // Assert
+        Assert.AreEqual(ImportingStatus.Error, result);
     }
 }

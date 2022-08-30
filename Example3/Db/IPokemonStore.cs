@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Example3.Model;
 
-namespace Example3.Db
+namespace Example3.Db;
+
+public interface IPokemonStore
 {
-    public interface IPokemonStore
-    {
-        Task SavePokemon(Pokemon pokemon);
-    }
+    Task SavePokemon(Pokemon pokemon);
 }

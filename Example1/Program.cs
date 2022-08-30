@@ -2,23 +2,16 @@
 using System.Threading.Tasks;
 using Example1.Command;
 
-namespace Example1
+namespace Example1;
+
+internal static class Program
 {
-    /*
-     * Tight coupling:
-     * - static classes and methods
-     * - framework classes and methods
-     * - new keyword
-     */
-    internal static class Program
+    static async Task Main()
     {
-        static async Task Main(string[] args)
-        {
-            var command = new ImportPokemonCommand();
+        var command = new ImportPokemonCommand();
 
-            await command.ImportPokemon(@"App_Data\data.json");
+        await command.ImportPokemon(@"App_Data\data.json");
 
-            Console.ReadKey();
-        }
+        Console.ReadKey();
     }
 }

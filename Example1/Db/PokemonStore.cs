@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using Example1.Model;
 
-namespace Example1.Db
-{
-    public class PokemonStore
-    {
-        public async Task SavePokemon(Pokemon pokemon)
-        {
-            Console.WriteLine("Saving to database: " + pokemon.Name);
+namespace Example1.Db;
 
-            await Task.Delay(0);
-        }
+public class PokemonStore
+{
+    public async Task SavePokemon(Pokemon pokemon)
+    {
+        Console.WriteLine("Saving to database: " + pokemon.Name);
+
+        await Task.Delay(0);
     }
 }
