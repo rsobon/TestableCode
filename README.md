@@ -2,9 +2,10 @@
 Short demo of designing testable code in .NET Core with interfaces, dependency injection and IoC
 
 Using:
-- .NET Core 3.1
+- .NET 6
 - Microsoft Dependency Injection
 - Moq
+- Fluent Assertions
 - NUnit
 
 ## What is testable code?
