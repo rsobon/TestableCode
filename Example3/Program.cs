@@ -6,26 +6,22 @@ using Example3.Logging;
 using Example3.Reader;
 using Example3.Wrappers;
 
-namespace Example3
+namespace Example3;
+
+internal static class Program
 {
-    /*
-     * Programming to interfaces
-     */
-    internal static class Program
+    static async Task Main()
     {
-        static async Task Main(string[] args)
-        {
-            var command = new ImportPokemonCommand(
-                new Logger(),
-                new PokemonStore(),
-                new PokemonReader(
-                    new DateTimeWrapper(),
-                    new Logger()),
-                new FileSystemWrapper());
+        var command = new ImportPokemonCommand(
+            new Logger(),
+            new PokemonStore(),
+            new PokemonReader(
+                new DateTimeWrapper(),
+                new Logger()),
+            new FileSystemWrapper());
 
-            await command.ImportPokemon(@"App_Data\data.json");
+        await command.ImportPokemon(@"App_Data\data.json");
 
-            Console.ReadKey();
-        }
+        Console.ReadKey();
     }
 }

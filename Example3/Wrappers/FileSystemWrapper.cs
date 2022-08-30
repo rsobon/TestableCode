@@ -1,12 +1,11 @@
 ﻿using System.IO;
 
-namespace Example3.Wrappers
+namespace Example3.Wrappers;
+
+public class FileSystemWrapper : IFileSystemWrapper
 {
-    public class FileSystemWrapper : IFileSystemWrapper
+    public Stream OpenRead(string filePath)
     {
-        public string ReadFile(string filePath)
-        {
-            return File.ReadAllText(filePath);
-        }
+        return File.OpenRead(filePath);
     }
 }

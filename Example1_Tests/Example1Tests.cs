@@ -4,43 +4,36 @@ using Example1.Command;
 using Example1.Enums;
 using NUnit.Framework;
 
-namespace Example1_Tests
+namespace Example1_Tests;
+
+[TestFixture]
+public class Example1Tests
 {
-    /*
-    * We can only test ImportingStatus result
-    */
-    [TestFixture]
-    public class Example1Tests
+    [Test]
+    public async Task ImportPokemonCommand_ShouldReturnImportingStatusSuccess()
     {
-        [Test]
-        public async Task ImportPokemonCommand_ShouldReturnImportingStatusSuccess()
-        {
-            // Arrange
-            string json = @"{ ""id"": 1, ""name"": ""Charmander"", ""type"": 1 }";
-            File.WriteAllText("test.json", json);
-            var file = new FileInfo("test.json");
-            var command = new ImportPokemonCommand();
+        // Arrange
+        var file = new FileInfo(@"App_Data\testdata.json");
+        var command = new ImportPokemonCommand();
 
-            // Act
-            var result = await command.ImportPokemon(file.FullName);
-            File.Delete("test.json");
+        // Act
+        var result = await command.ImportPokemon(file.FullName);
 
-            // Assert
-            Assert.AreEqual(ImportingStatus.Success, result);
-        }
+        // Assert
+        Assert.AreEqual(ImportingStatus.Success, result);
+    }
 
-        [Test]
-        public async Task ImportPokemonCommand_ShouldReturnImportingStatusError_WhenMissingFile()
-        {
-            // Arrange
-            var file = new FileInfo("dummy_file.json");
-            var command = new ImportPokemonCommand();
+    [Test]
+    public async Task ImportPokemonCommand_ShouldReturnImportingStatusError_WhenMissingFile()
+    {
+        // Arrange
+        var file = new FileInfo("test.json");
+        var command = new ImportPokemonCommand();
 
-            // Act
-            var result = await command.ImportPokemon(file.FullName);
+        // Act
+        var result = await command.ImportPokemon(file.FullName);
 
-            // Assert
-            Assert.AreEqual(ImportingStatus.Error, result);
-        }
+        // Assert
+        Assert.AreEqual(ImportingStatus.Error, result);
     }
 }

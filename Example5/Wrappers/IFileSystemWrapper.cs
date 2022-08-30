@@ -1,7 +1,8 @@
-﻿namespace Example5.Wrappers
+﻿using System.IO;
+
+namespace Example5.Wrappers;
+
+public interface IFileSystemWrapper
 {
-    public interface IFileSystemWrapper
-    {
-        string ReadFile(string filePath);
-    }
+    Stream OpenRead(string filePath);
 }

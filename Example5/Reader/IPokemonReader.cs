@@ -1,9 +1,10 @@
-﻿using Example5.Model;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Example5.Model;
 
-namespace Example5.Reader
+namespace Example5.Reader;
+
+public interface IPokemonReader
 {
-    public interface IPokemonReader
-    {
-        Pokemon ReadPokemon(string fileContent);
-    }
+    Task<Pokemon> ReadPokemon(Stream stream);
 }

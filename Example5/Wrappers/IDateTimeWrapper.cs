@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Example5.Wrappers
+namespace Example5.Wrappers;
+
+public interface IDateTimeWrapper
 {
-    public interface IDateTimeWrapper
-    {
-        DateTime GetNow();
-    }
+    DateTime GetNow();
 }

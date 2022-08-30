@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Example3.Logging
+namespace Example3.Logging;
+
+public class Logger : ILogger
 {
-    public class Logger : ILogger
+    public void Information(string message)
     {
-        public void Information(string message)
-        {
-            Console.WriteLine(message);
-        }
+        Console.WriteLine(message);
     }
 }

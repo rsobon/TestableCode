@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Example5.Enums;
 
-namespace Example5.Command
+namespace Example5.Command;
+
+public interface IImportPokemonCommand
 {
-    public interface IImportPokemonCommand
-    {
-        Task<ImportingStatus> ImportPokemon(string filePath);
-    }
+    Task<ImportingStatus> ImportPokemon(string filePath);
 }

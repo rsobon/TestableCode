@@ -1,7 +1,6 @@
-﻿namespace Example5.Logging
+﻿namespace Example5.Logging;
+
+public interface ILogger
 {
-    public interface ILogger
-    {
-        void Information(string message);
-    }
+    void Information(string message);
 }
