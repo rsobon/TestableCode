@@ -3,7 +3,7 @@
 ## `PokemonReader`
 - Logic in constructor, dependency on `PokemonConfiguration`
 - Requires to do more setup for tests
-- If dependency in constructor fails, class will fail to instantiate during DI (e.g. if `appsettings.json` fails to deserialize)
+- If dependency in constructor fails, class will fail to instantiate during DI (e.g. if `external-resource.json` fails to deserialize)
 - Cannot test the `IsValid` method because it's private
 
 ## `PokemonConfiguration`
@@ -16,7 +16,6 @@
     - `PokemonConfiguration` registered as Singleton
     - New separate `ValidationService` that would be responsible for calling `IsValid` instead of `PokemonReader`
 
-    
 ## `Example5_Tests`
 - New test `EntityReader_ShouldLogValidationFailed` which uses `ThrowAsync`
 - We cannot test `IsValid` method in `PokemonReader`

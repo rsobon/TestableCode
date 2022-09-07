@@ -1,0 +1,8 @@
+﻿using Example6.Model;
+
+namespace Example6.Db;
+
+public interface IPokemonStore
+{
+    Task SavePokemon(Pokemon pokemon);
+}

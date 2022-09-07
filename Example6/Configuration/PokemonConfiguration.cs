@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace Example5.Configuration;
+namespace Example6.Configuration;
 
 public class PokemonConfiguration : IPokemonConfiguration
 {

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Example5.Db;
-using Example5.Enums;
-using Example5.Logging;
-using Example5.Reader;
-using Example5.Wrappers;
+﻿using Example6.Db;
+using Example6.Enums;
+using Example6.Logging;
+using Example6.Reader;
+using Example6.Wrappers;
 
-namespace Example5.Command;
+namespace Example6.Command;
 
 public class ImportPokemonCommand : IImportPokemonCommand
 {
