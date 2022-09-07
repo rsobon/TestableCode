@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Example5.Command;
-using Example5.Configuration;
 using Example5.Db;
 using Example5.Enums;
 using Example5.Logging;
 using Example5.Model;
 using Example5.Reader;
+using Example5.Validation;
 using Example5.Wrappers;
 using FluentAssertions;
 using Moq;
@@ -21,7 +21,7 @@ public class Example5Tests
 {
     private Mock<IDateTimeWrapper> _dateTimeWrapperMock;
     private Mock<IPokemonStore> _databaseMock;
-    private Mock<IPokemonConfiguration> _configurationMock;
+    private Mock<IPokemonValidationService> _configurationMock;
     private Mock<IPokemonReader> _pokemonReaderMock;
     private Mock<ILogger> _loggerMock;
     private Mock<IFileSystemWrapper> _fileSystemWrapperMock;
@@ -34,7 +34,7 @@ public class Example5Tests
     {
         _dateTimeWrapperMock = new Mock<IDateTimeWrapper>();
         _databaseMock = new Mock<IPokemonStore>();
-        _configurationMock = new Mock<IPokemonConfiguration>();
+        _configurationMock = new Mock<IPokemonValidationService>();
         _pokemonReaderMock = new Mock<IPokemonReader>();
         _loggerMock = new Mock<ILogger>();
         _fileSystemWrapperMock = new Mock<IFileSystemWrapper>();

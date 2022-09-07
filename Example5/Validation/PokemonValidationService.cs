@@ -1,8 +1,10 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 
-namespace Example6.Configuration;
+namespace Example5.Validation;
 
-public class PokemonConfiguration : IPokemonConfiguration
+public class PokemonValidationService : IPokemonValidationService
 {
     public IList<string> GetAllowedPokemonNames()
     {

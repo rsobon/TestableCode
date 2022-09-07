@@ -4,5 +4,5 @@ namespace Example6.Reader;
 
 public interface IPokemonReader
 {
-    Task<Pokemon> ReadPokemon(Stream stream);
+    Task<IList<Pokemon>> ReadPokemon(Stream stream);
 }

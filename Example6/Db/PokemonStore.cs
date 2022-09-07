@@ -4,10 +4,8 @@ namespace Example6.Db;
 
 public class PokemonStore : IPokemonStore
 {
-    public async Task SavePokemon(Pokemon pokemon)
+    public async Task SavePokemon(IList<Pokemon> pokemon)
     {
-        Console.WriteLine("Saving to database: " + pokemon.Name);
-
         await Task.Delay(0);
     }
 }

@@ -6,4 +6,14 @@ public class FileSystemWrapper : IFileSystemWrapper
     {
         return File.OpenRead(filePath);
     }
+
+    public IList<string> GetFiles(string directory)
+    {
+        return Directory.GetFiles(directory);
+    }
+
+    public void DeleteFile(string filePath)
+    {
+        File.Delete(filePath);
+    }
 }

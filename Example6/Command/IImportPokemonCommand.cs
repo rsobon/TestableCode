@@ -1,8 +1,6 @@
-﻿using Example6.Enums;
-
-namespace Example6.Command;
+﻿namespace Example6.Command;
 
 public interface IImportPokemonCommand
 {
-    Task<ImportingStatus> ImportPokemon(string filePath);
+    Task ImportFiles(string directory);
 }

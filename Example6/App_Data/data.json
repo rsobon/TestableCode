@@ -1,5 +1,18 @@
-﻿{
-  "id": 1,
-  "name": "Bulbasaur",
-  "type": 0
-}
+﻿[
+  {
+    "id": 1,
+    "name": "Bulbasaur",
+    "type": 0
+  },
+  {
+    "id": 4,
+    "name": "Charmander",
+    "type": 1
+  },
+  {
+    "id": 7,
+    "name": "Squirtle",
+    "type": 2
+  }
+]
+

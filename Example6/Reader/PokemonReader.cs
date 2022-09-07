@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
-using Example6.Configuration;
-using Example6.Logging;
 using Example6.Model;
+using Example6.Validation;
 using Example6.Wrappers;
+using Microsoft.Extensions.Logging;
 
 namespace Example6.Reader;
 
@@ -10,39 +10,46 @@ public class PokemonReader : IPokemonReader
 {
     private readonly IDateTimeWrapper _dateTimeWrapper;
     private readonly ILogger _logger;
+    private readonly IPokemonValidationService _validationService;
     private readonly JsonSerializerOptions _jso;
-    private readonly IList<string> _allowedPokemonNames;
 
-    public PokemonReader(IDateTimeWrapper dateTimeWrapper, ILogger logger, IPokemonConfiguration configuration)
+    public PokemonReader(IDateTimeWrapper dateTimeWrapper, ILogger logger, IPokemonValidationService validationService)
     {
         _dateTimeWrapper = dateTimeWrapper;
         _logger = logger;
+        _validationService = validationService;
         _jso = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
         };
-        _allowedPokemonNames = configuration.GetAllowedPokemonNames();
     }
 
-    public async Task<Pokemon> ReadPokemon(Stream stream)
+    public async Task<IList<Pokemon>> ReadPokemon(Stream stream)
     {
-        var pokemon = await JsonSerializer.DeserializeAsync<Pokemon>(stream, _jso);
+        var pokemonList = await JsonSerializer.DeserializeAsync<IList<Pokemon>>(stream, _jso);
 
-        if (pokemon == null)
+        if (pokemonList == null)
         {
             throw new InvalidDataException("Json invalid");
         }
 
-        var isValid = IsValid(pokemon);
+        var now = _dateTimeWrapper.GetNow();
 
-        if (!isValid)
+        foreach (var pokemon in pokemonList)
         {
-            throw new InvalidDataException("Validation failed!");
+            var isValid = IsValid(pokemon);
+
+            if (!isValid)
+            {
+                _logger.LogInformation($"Pokemon invalid. Id: {pokemon.Id}, Name: {pokemon.Name}, Type: {pokemon.Type}. Skipping...");
+                continue;
+            }
+
+            pokemon.Timestamp = now;
+            _logger.LogInformation($"Pokemon deserialized. Id: {pokemon.Id}, Name: {pokemon.Name}, Type: {pokemon.Type}, Timestamp: {pokemon.Timestamp}");
         }
 
-        pokemon.Timestamp = _dateTimeWrapper.GetNow();
-        _logger.Information($"Pokemon deserialized. Id: {pokemon.Id}, Name: {pokemon.Name}, Type: {pokemon.Type}, Timestamp: {pokemon.Timestamp}");
-        return pokemon;
+        return pokemonList;
     }
 
     private bool IsValid(Pokemon pokemon)
@@ -51,13 +58,19 @@ public class PokemonReader : IPokemonReader
 
         if (string.IsNullOrEmpty(pokemon.Name))
         {
-            _logger.Information("Pokemon name is null or empty!");
+            _logger.LogInformation("Pokemon name is null or empty!");
             validationResult = false;
         }
 
-        if (!_allowedPokemonNames.Contains(pokemon.Name))
+        if (pokemon.Id < 1)
         {
-            _logger.Information($"Pokemon name: \"{pokemon.Name}\" is not allowed!");
+            _logger.LogInformation("Pokemon id is lower than 1!");
+            validationResult = false;
+        }
+
+        if (!_validationService.GetAllowedPokemonTypes().Contains(pokemon.Type))
+        {
+            _logger.LogInformation($"Pokemon type: \"{pokemon.Type}\" is not allowed!");
             validationResult = false;
         }
 

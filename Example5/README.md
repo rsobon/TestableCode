@@ -18,4 +18,4 @@
 
 ## `Example5_Tests`
 - New test `EntityReader_ShouldLogValidationFailed` which uses `ThrowAsync`
-- We cannot test `IsValid` method in `PokemonReader`
+- We cannot test `IsValid` method in `PokemonReader` - `ValidationService` would help

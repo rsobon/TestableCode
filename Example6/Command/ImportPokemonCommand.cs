@@ -1,8 +1,8 @@
 ﻿using Example6.Db;
 using Example6.Enums;
-using Example6.Logging;
 using Example6.Reader;
 using Example6.Wrappers;
+using Microsoft.Extensions.Logging;
 
 namespace Example6.Command;
 
@@ -25,23 +25,39 @@ public class ImportPokemonCommand : IImportPokemonCommand
         _fileSystemWrapper = fileSystemWrapper;
     }
 
-    public async Task<ImportingStatus> ImportPokemon(string filePath)
+    public async Task ImportFiles(string directory)
+    {
+        var files = _fileSystemWrapper.GetFiles(directory);
+
+        foreach (var filePath in files)
+        {
+            var status = await ImportPokemon(filePath);
+            _logger.LogInformation($"Importing file: \"{filePath}\" finished!. Doing something with a returned status: \"{status}\".");
+            if (status == ImportingStatus.Success)
+            {
+                _fileSystemWrapper.DeleteFile(filePath);
+            }
+        }
+    }
+
+    private async Task<ImportingStatus> ImportPokemon(string filePath)
     {
         try
         {
-            _logger.Information($"Received pokemon to import: {filePath}...");
+            _logger.LogInformation($"Received pokemon file to import: {filePath}...");
 
             var stream = _fileSystemWrapper.OpenRead(filePath);
-            var pokemon = await _pokemonReader.ReadPokemon(stream);
+            var pokemonList = await _pokemonReader.ReadPokemon(stream);
 
-            await _database.SavePokemon(pokemon);
-            _logger.Information($"Pokemon saved. Id: {pokemon.Id}, Name: {pokemon.Name}, Type: {pokemon.Type}, Timestamp: {pokemon.Timestamp}");
+            await _database.SavePokemon(pokemonList);
+
+            _logger.LogInformation($"Saved pokemon from file. Count: {pokemonList.Count}");
 
             return ImportingStatus.Success;
         }
         catch (Exception e)
         {
-            _logger.Information("Error! " + e.Message);
+            _logger.LogInformation("Error! " + e.Message);
             return ImportingStatus.Error;
         }
     }

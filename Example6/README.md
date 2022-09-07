@@ -7,3 +7,7 @@
 - Singleton to load PokemonConfiguration
 - DI lifetimes
 - Service locators and factories
+
+## Program
+- Used `Worker` pattern
+- Used `ILogger`
