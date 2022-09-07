@@ -24,7 +24,7 @@ public class PokemonReader : IPokemonReader
         {
             PropertyNameCaseInsensitive = true,
         };
-        _allowedPokemonNames = configuration.AllowedPokemonNames();
+        _allowedPokemonNames = configuration.GetAllowedPokemonNames();
     }
 
     public async Task<Pokemon> ReadPokemon(Stream stream)

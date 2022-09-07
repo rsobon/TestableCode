@@ -54,7 +54,7 @@ public class Example5Tests
     {
         // Arrange
         _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
-        _configurationMock.Setup(x => x.AllowedPokemonNames()).Returns(new List<string>
+        _configurationMock.Setup(x => x.GetAllowedPokemonNames()).Returns(new List<string>
         {
             "Charmander"
         });
@@ -73,7 +73,7 @@ public class Example5Tests
     {
         // Arrange
         _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
-        _configurationMock.Setup(x => x.AllowedPokemonNames()).Returns(new List<string>
+        _configurationMock.Setup(x => x.GetAllowedPokemonNames()).Returns(new List<string>
         {
             "Charmander"
         });
@@ -92,7 +92,7 @@ public class Example5Tests
     {
         // Arrange
         _dateTimeWrapperMock.Setup(x => x.GetNow()).Returns(new DateTime(2010, 1, 1));
-        _configurationMock.Setup(x => x.AllowedPokemonNames()).Returns(new List<string>
+        _configurationMock.Setup(x => x.GetAllowedPokemonNames()).Returns(new List<string>
         {
             "Bulbasaur"
         });

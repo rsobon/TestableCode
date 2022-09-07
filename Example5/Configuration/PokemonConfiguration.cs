@@ -6,7 +6,7 @@ namespace Example5.Configuration;
 
 public class PokemonConfiguration : IPokemonConfiguration
 {
-    public IList<string> AllowedPokemonNames()
+    public IList<string> GetAllowedPokemonNames()
     {
         var config = File.ReadAllText(@"appsettings.json");
         var options = JsonSerializer.Deserialize<PokemonOptions>(config);

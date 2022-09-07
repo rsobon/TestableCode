@@ -4,5 +4,5 @@ namespace Example5.Configuration;
 
 public interface IPokemonConfiguration
 {
-    IList<string> AllowedPokemonNames();
+    IList<string> GetAllowedPokemonNames();
 }

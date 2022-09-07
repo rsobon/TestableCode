@@ -17,4 +17,4 @@
 - Instead mocks can be set up to return what we need.
 - We can mock `DateTime.Now`
 - Moq, FluentAssertions
-
+- Triangulation?
