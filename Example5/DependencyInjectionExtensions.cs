@@ -1,4 +1,5 @@
 ﻿using Example5.Command;
+using Example5.Configuration;
 using Example5.Db;
 using Example5.Logging;
 using Example5.Reader;
@@ -17,5 +18,6 @@ public static class DependencyInjectionExtensions
         serviceCollection.AddTransient<ILogger, Logger>();
         serviceCollection.AddTransient<IFileSystemWrapper, FileSystemWrapper>();
         serviceCollection.AddTransient<IImportPokemonCommand, ImportPokemonCommand>();
+        serviceCollection.AddTransient<IPokemonConfiguration, PokemonConfiguration>();
     }
 }
