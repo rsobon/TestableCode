@@ -17,6 +17,5 @@ public static class DependencyInjectionExtensions
         services.AddTransient<IFileSystemWrapper, FileSystemWrapper>();
         services.AddTransient<IImportPokemonCommand, ImportPokemonCommand>();
         services.AddTransient<IPokemonValidationService, PokemonValidationService>();
-        services.AddTransient<PokemonDbContext>();
     }
 }

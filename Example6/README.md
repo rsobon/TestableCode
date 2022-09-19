@@ -19,9 +19,6 @@ Three different types of instantiating:
 - Transient lifetime (Worker2)
 - Service Locator (Worker3)
 
-## `DependencyInjectionExtensions`
-- Transient registration of `PokemonDbContext` without interface?!
-
 ## `ImportPokemonCommnad`
 - Maybe instead of `ImportingStatus` there should be more complex result object saved to DB. 
 - This way we can assert it in the integration test with all possible results (validation, parsing errors etc)
