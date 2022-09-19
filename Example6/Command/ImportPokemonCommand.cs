@@ -9,29 +9,29 @@ namespace Example6.Command;
 public class ImportPokemonCommand : IImportPokemonCommand
 {
     private readonly ILogger<ImportPokemonCommand> _logger;
-    private readonly IPokemonStore _database;
+    private readonly IPokemonStore _store;
     private readonly IPokemonReader _pokemonReader;
     private readonly IFileSystemWrapper _fileSystemWrapper;
 
     public ImportPokemonCommand(
         ILogger<ImportPokemonCommand> logger,
-        IPokemonStore database,
+        IPokemonStore store,
         IPokemonReader pokemonReader,
         IFileSystemWrapper fileSystemWrapper)
     {
         _logger = logger;
-        _database = database;
+        _store = store;
         _pokemonReader = pokemonReader;
         _fileSystemWrapper = fileSystemWrapper;
     }
 
-    public async Task ImportFiles(string directory)
+    public async Task ImportFiles(string directory, CancellationToken token)
     {
         var files = _fileSystemWrapper.GetFiles(directory);
 
         foreach (var filePath in files)
         {
-            var status = await ImportPokemon(filePath);
+            var status = await ImportPokemon(filePath, token);
             _logger.LogInformation($"Importing file: \"{filePath}\" finished!. Doing something with a returned status: \"{status}\".");
             if (status == ImportingStatus.Success)
             {
@@ -40,17 +40,15 @@ public class ImportPokemonCommand : IImportPokemonCommand
         }
     }
 
-    private async Task<ImportingStatus> ImportPokemon(string filePath)
+    private async Task<ImportingStatus> ImportPokemon(string filePath, CancellationToken token)
     {
         try
         {
             _logger.LogInformation($"Received pokemon file to import: {filePath}...");
 
-            var stream = _fileSystemWrapper.OpenRead(filePath);
+            await using var stream = _fileSystemWrapper.OpenRead(filePath);
             var pokemonList = await _pokemonReader.ReadPokemon(stream);
-
-            await _database.SavePokemon(pokemonList);
-
+            await _store.SavePokemon(pokemonList, token);
             _logger.LogInformation($"Saved pokemon from file. Count: {pokemonList.Count}");
 
             return ImportingStatus.Success;

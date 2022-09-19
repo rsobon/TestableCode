@@ -21,6 +21,7 @@ Three different types of instantiating:
 
 ## `DependencyInjectionExtensions`
 - Auto-factory pattern
+- Transient registration of `PokemonDbContext` without interface?!
 
 ## `ImportPokemonCommnad`
 - Maybe instead of `ImportingStatus` there should be more complex result object saved to DB. 

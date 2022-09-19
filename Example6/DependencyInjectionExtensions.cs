@@ -18,5 +18,6 @@ public static class DependencyInjectionExtensions
         serviceCollection.AddTransient<IImportPokemonCommand, ImportPokemonCommand>();
         serviceCollection.AddSingleton<Func<IImportPokemonCommand>>(provider => provider.GetRequiredService<IImportPokemonCommand>);
         serviceCollection.AddTransient<IPokemonValidationService, PokemonValidationService>();
+        serviceCollection.AddTransient<PokemonDbContext>();
     }
 }

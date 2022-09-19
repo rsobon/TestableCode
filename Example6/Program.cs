@@ -8,12 +8,11 @@ using Microsoft.Extensions.Hosting;
 var builder = Host.CreateDefaultBuilder(args);
 
 builder.ConfigureServices((context, services) =>
-    {
-        services.RegisterServices();
-        services.AddDbContext<PokemonDbContext>(options => options.UseSqlServer(context.Configuration.GetConnectionString("Pokemon")));
-        services.AddHostedService<Worker>();
-    })
-    .Build();
+{
+    services.RegisterServices();
+    services.AddDbContext<PokemonDbContext>(options => options.UseSqlServer(context.Configuration.GetConnectionString("Pokemon")));
+    services.AddHostedService<Worker>();
+});
 
 var host = builder.Build();
 await host.RunAsync();

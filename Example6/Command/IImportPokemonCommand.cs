@@ -2,5 +2,5 @@
 
 public interface IImportPokemonCommand
 {
-    Task ImportFiles(string directory);
+    Task ImportFiles(string directory, CancellationToken token);
 }

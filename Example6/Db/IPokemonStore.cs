@@ -4,5 +4,5 @@ namespace Example6.Db;
 
 public interface IPokemonStore
 {
-    Task SavePokemon(IList<Pokemon> pokemon);
+    Task SavePokemon(IList<Pokemon> pokemon, CancellationToken token);
 }
