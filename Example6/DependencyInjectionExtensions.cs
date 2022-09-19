@@ -16,6 +16,7 @@ public static class DependencyInjectionExtensions
         serviceCollection.AddTransient<IDateTimeWrapper, DateTimeWrapper>();
         serviceCollection.AddTransient<IFileSystemWrapper, FileSystemWrapper>();
         serviceCollection.AddTransient<IImportPokemonCommand, ImportPokemonCommand>();
+        serviceCollection.AddSingleton<Func<IImportPokemonCommand>>(provider => provider.GetRequiredService<IImportPokemonCommand>);
         serviceCollection.AddTransient<IPokemonValidationService, PokemonValidationService>();
     }
 }

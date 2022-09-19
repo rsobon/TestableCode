@@ -8,13 +8,13 @@ namespace Example6.Command;
 
 public class ImportPokemonCommand : IImportPokemonCommand
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<ImportPokemonCommand> _logger;
     private readonly IPokemonStore _database;
     private readonly IPokemonReader _pokemonReader;
     private readonly IFileSystemWrapper _fileSystemWrapper;
 
     public ImportPokemonCommand(
-        ILogger logger,
+        ILogger<ImportPokemonCommand> logger,
         IPokemonStore database,
         IPokemonReader pokemonReader,
         IFileSystemWrapper fileSystemWrapper)

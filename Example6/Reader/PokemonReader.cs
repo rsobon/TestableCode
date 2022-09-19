@@ -8,15 +8,18 @@ namespace Example6.Reader;
 
 public class PokemonReader : IPokemonReader
 {
+    private readonly ILogger<PokemonReader> _logger;
     private readonly IDateTimeWrapper _dateTimeWrapper;
-    private readonly ILogger _logger;
     private readonly IPokemonValidationService _validationService;
     private readonly JsonSerializerOptions _jso;
 
-    public PokemonReader(IDateTimeWrapper dateTimeWrapper, ILogger logger, IPokemonValidationService validationService)
+    public PokemonReader(
+        ILogger<PokemonReader> logger, 
+        IDateTimeWrapper dateTimeWrapper, 
+        IPokemonValidationService validationService)
     {
-        _dateTimeWrapper = dateTimeWrapper;
         _logger = logger;
+        _dateTimeWrapper = dateTimeWrapper;
         _validationService = validationService;
         _jso = new JsonSerializerOptions
         {

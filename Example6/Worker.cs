@@ -63,16 +63,16 @@ public class Worker : BackgroundService
 
             #region 1
             // var command = _serviceProvider.GetRequiredService<IImportPokemonCommand>();
-            // await command.ImportPokemon(_configuration.GetValue<string>("Inbox"));
+            // await command.ImportFiles(_configuration.GetValue<string>("Inbox"));
             #endregion
 
             #region 2
-            // await _import.ImportPokemon(_configuration.GetValue<string>("Inbox"));
+            // await _import.ImportFiles(_configuration.GetValue<string>("Inbox"));
             #endregion
 
             #region 3
             var command = _importFactory();
-            await command.ImportPokemon(_configuration.GetValue<string>("Inbox"));
+            await command.ImportFiles(_configuration.GetValue<string>("Inbox"));
             #endregion
 
             await Task.Delay(1000, stoppingToken);
