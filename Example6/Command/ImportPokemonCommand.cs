@@ -32,9 +32,10 @@ public class ImportPokemonCommand : IImportPokemonCommand
         foreach (var filePath in files)
         {
             var status = await ImportPokemon(filePath, token);
-            _logger.LogInformation($"Importing file: \"{filePath}\" finished!. Doing something with a returned status: \"{status}\".");
+            _logger.LogInformation($"Importing file: \"{filePath}\" finished!. Status: \"{status}\"");
             if (status == ImportingStatus.Success)
             {
+                _logger.LogInformation($"Deleting file: \"{filePath}\"");
                 _fileSystemWrapper.DeleteFile(filePath);
             }
         }
@@ -49,8 +50,6 @@ public class ImportPokemonCommand : IImportPokemonCommand
             await using var stream = _fileSystemWrapper.OpenRead(filePath);
             var pokemonList = await _pokemonReader.ReadPokemon(stream);
             await _store.SavePokemon(pokemonList, token);
-            _logger.LogInformation($"Saved pokemon from file. Count: {pokemonList.Count}");
-
             return ImportingStatus.Success;
         }
         catch (Exception e)

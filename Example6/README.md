@@ -15,17 +15,24 @@
 
 ## `Worker`
 Three different types of instantiating:
-- Service Locator
-- Transient lifetime
-- Factory pattern
+- Factory pattern (Worker)
+- Transient lifetime (Worker2)
+- Service Locator (Worker3)
 
 ## `DependencyInjectionExtensions`
-- Auto-factory pattern
 - Transient registration of `PokemonDbContext` without interface?!
 
 ## `ImportPokemonCommnad`
 - Maybe instead of `ImportingStatus` there should be more complex result object saved to DB. 
 - This way we can assert it in the integration test with all possible results (validation, parsing errors etc)
+
+## Example6_Tests
+- Valuable integration tests
+- Test simulate "real" business event - copying the file to Inbox directory
+- We use IoC registrations from main app (`RegisterServices()`) but substitue some registrations for the purpose of testing (`AddDbContext()`)
+- No need to have interface for everything (like `PokemonDbContext`)
+- Timestamp cannot be mocked (another subsitute in IoC registration)
+- More triangulation (more invalid test data)
 
 ## Development tools
 Starting up local db:
