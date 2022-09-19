@@ -29,6 +29,7 @@ Three different types of instantiating:
 ## Example6_Tests
 - Valuable integration tests
 - Test simulate "real" business event - copying the file to Inbox directory
+- We can do proper TDD - method body of tested `ImportPokemonCommnad` can be deleted and test still compile (we only need input and output to write the test)
 - We use IoC registrations from main app (`RegisterServices()`) but substitue some registrations for the purpose of testing (`AddDbContext()`)
 - No need to have interface for everything (like `PokemonDbContext`)
 - Timestamp cannot be mocked (another subsitute in IoC registration)
