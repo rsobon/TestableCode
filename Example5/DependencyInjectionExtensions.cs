@@ -2,6 +2,7 @@
 using Example5.Db;
 using Example5.Logging;
 using Example5.Reader;
+using Example5.Validation;
 using Example5.Wrappers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,5 +18,6 @@ public static class DependencyInjectionExtensions
         serviceCollection.AddTransient<ILogger, Logger>();
         serviceCollection.AddTransient<IFileSystemWrapper, FileSystemWrapper>();
         serviceCollection.AddTransient<IImportPokemonCommand, ImportPokemonCommand>();
+        serviceCollection.AddTransient<IPokemonValidationService, PokemonValidationService>();
     }
 }

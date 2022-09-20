@@ -13,8 +13,7 @@
 - `JsonSerializerOptions` initialized in constructor
 
 ## `Example3Tests`
-- Tests no longer require a physical file.
-- Instead mocks can be set up to return what we need.
+- Tests no longer require a physical file because we can mock `IFileSystemWrapper` methods
 - We can mock `DateTime.Now`
 - Moq, FluentAssertions
-
+- Triangulation?

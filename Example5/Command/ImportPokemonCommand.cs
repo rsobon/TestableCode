@@ -34,10 +34,10 @@ public class ImportPokemonCommand : IImportPokemonCommand
             _logger.Information($"Received pokemon to import: {filePath}...");
 
             var stream = _fileSystemWrapper.OpenRead(filePath);
-            var entity = await _pokemonReader.ReadPokemon(stream);
+            var pokemon = await _pokemonReader.ReadPokemon(stream);
 
-            await _database.SavePokemon(entity);
-            _logger.Information("Pokemon saved. Id: {pokemon.Id}, Name: {pokemon.Name}, Type: {pokemon.Type}, Timestamp: {pokemon.Timestamp}");
+            await _database.SavePokemon(pokemon);
+            _logger.Information($"Pokemon saved. Id: {pokemon.Id}, Name: {pokemon.Name}, Type: {pokemon.Type}, Timestamp: {pokemon.Timestamp}");
 
             return ImportingStatus.Success;
         }

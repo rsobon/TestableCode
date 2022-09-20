@@ -13,7 +13,8 @@ internal static class Program
         serviceCollection.RegisterServices();
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
-        var command = serviceProvider.GetRequiredService<IImportPokemonCommand>();
+        //service locator is ok in program entry point
+        var command = serviceProvider.GetRequiredService<IImportPokemonCommand>(); 
         await command.ImportPokemon(@"App_Data\data.json");
 
         Console.ReadKey();

@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Example5.Configuration;
 using Example5.Logging;
 using Example5.Model;
+using Example5.Validation;
 using Example5.Wrappers;
 
 namespace Example5.Reader;
@@ -16,7 +16,7 @@ public class PokemonReader : IPokemonReader
     private readonly JsonSerializerOptions _jso;
     private readonly IList<string> _allowedPokemonNames;
 
-    public PokemonReader(IDateTimeWrapper dateTimeWrapper, ILogger logger, IPokemonConfiguration configuration)
+    public PokemonReader(IDateTimeWrapper dateTimeWrapper, ILogger logger, IPokemonValidationService validationService)
     {
         _dateTimeWrapper = dateTimeWrapper;
         _logger = logger;
@@ -24,7 +24,7 @@ public class PokemonReader : IPokemonReader
         {
             PropertyNameCaseInsensitive = true,
         };
-        _allowedPokemonNames = configuration.AllowedPokemonNames();
+        _allowedPokemonNames = validationService.GetAllowedPokemonNames();
     }
 
     public async Task<Pokemon> ReadPokemon(Stream stream)
